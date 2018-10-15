@@ -1,9 +1,9 @@
 import React from "react";
 
 const Instructions = (props) => (
-    <div>
+    <div className="bg-info text-white text-center container">
         <p>
-            Some instructions here.
+            {props.instructions}
         </p>
         <p>
             Current Score: {props.currentScore} |

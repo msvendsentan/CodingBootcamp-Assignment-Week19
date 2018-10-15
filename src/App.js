@@ -8,7 +8,8 @@ class App extends Component {
         cards: [],
         guessed: [],
         currentScore: 0,
-        topScore: 0
+        topScore: 0,
+        instructions: "Can you click on all twelve cards with no duplicates? Click a card to get started!"
     };
 
     componentDidMount() {
@@ -38,19 +39,32 @@ class App extends Component {
     }
 
     handleClick = (event) => {
-        console.log(`I've been clicked! - ${event.target.getAttribute("data-value")}`);
 
-        if (this.state.guessed.indexOf(event.target.getAttribute("data-value")) !== -1) {
-            console.log("Oops, you lost");
+        if (this.state.guessed.length === this.state.cards.length - 1 && this.state.guessed.includes(event.target.getAttribute("data-value")) === false) {
+            this.setState({
+                guessed: [],
+                currentScore: this.state.currentScore + 1,
+                topScore: Math.max(this.state.topScore, this.state.currentScore + 1),
+                instructions: "Great job! You got them all! Click a new card to start a new game."
+            });
+        } else if (this.state.currentScore === 12) {
+            this.setState({
+                guessed: [...this.state.guessed, event.target.getAttribute("data-value")],
+                currentScore: 1,
+                instructions: "So far so good; that was a new card. Click another!"
+            });        
+        } else if (this.state.guessed.includes(event.target.getAttribute("data-value"))) {
             this.setState({
                 guessed: [],
                 currentScore: 0,
+                instructions: "Shoot, you had already clicked that card! Click a new card to start a new game."
             });
         } else {
             this.setState({
                 guessed: [...this.state.guessed, event.target.getAttribute("data-value")],
                 currentScore: this.state.currentScore + 1,
-                topScore: Math.max(this.state.topScore, this.state.currentScore + 1)
+                topScore: Math.max(this.state.topScore, this.state.currentScore + 1),
+                instructions: "So far so good; that was a new card. Click another!"
             });
         }
 
@@ -62,31 +76,19 @@ class App extends Component {
             <div>
                 <Header />
                 <Instructions 
+                    instructions={this.state.instructions}
                     currentScore={this.state.currentScore}
                     topScore={this.state.topScore}
                 />
-                <GameContainer 
-                    cards={this.state.cards}
-                    handleClick={this.handleClick}
-                />
+                <div className="container bg-secondary">
+                    <GameContainer 
+                        cards={this.state.cards}
+                        handleClick={this.handleClick}
+                    />
+                </div>
             </div>
         )
     }
 }
-
-/*
-
-const App = () => (
-    <div>
-        <Header />
-        <Instructions 
-            currentScore=""
-            topScore=""
-        />
-        <GameContainer />
-    </div>
-);
-
-*/
 
 export default App;
