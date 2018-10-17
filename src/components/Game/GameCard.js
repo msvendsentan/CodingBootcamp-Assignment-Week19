@@ -3,16 +3,12 @@ import "./GameCard.css";
 
 const GameCard = props => (
     <div 
-        className="card shadow-lg d-flex"
+        className={props.cheat && props.guessed.includes(props.cardId.toString()) ? "trumpcard border border-danger" : "trumpcard"}
         onClick={props.handleClick}
-        data-value={props.children}
+        data-value={props.cardId}
+        data-guessed={props.guessed}
     >
-        <div 
-            className="card-body align-items-center d-flex justify-content-center"
-            data-value={props.children}
-        >
-            {props.children}
-        </div>
+        {props.children}
     </div>
 );
 

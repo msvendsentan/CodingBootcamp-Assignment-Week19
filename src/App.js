@@ -9,13 +9,14 @@ class App extends Component {
         guessed: [],
         currentScore: 0,
         topScore: 0,
+        cheat: false,
         instructions: "Can you click on all twelve cards with no duplicates? Click a card to get started!"
     };
 
     componentDidMount() {
         let cards = [];
         [...Array(12).keys()].forEach(i => {
-            cards.push({ id: i, order: i });
+            cards.push({ id: i, order: i, src: i });
         });
 
         this.setState({
@@ -39,7 +40,6 @@ class App extends Component {
     }
 
     handleClick = (event) => {
-
         if (this.state.guessed.length === this.state.cards.length - 1 && this.state.guessed.includes(event.target.getAttribute("data-value")) === false) {
             this.setState({
                 guessed: [],
@@ -71,20 +71,40 @@ class App extends Component {
         this.shuffleCards();
     }
 
+    handleCheatClick = (event) => {
+        if (document.getElementById("cheatbox").checked) {
+            this.setState({
+                cheat: true
+            });
+        } else {
+            this.setState({
+                cheat: false
+            });
+        }
+        console.log(this.state.cheat);
+    }
+
     render() {
         return (
             <div>
                 <Header />
-                <Instructions 
+                <Instructions
                     instructions={this.state.instructions}
                     currentScore={this.state.currentScore}
                     topScore={this.state.topScore}
                 />
                 <div className="container bg-secondary">
-                    <GameContainer 
+                    <GameContainer
                         cards={this.state.cards}
+                        guessed={this.state.guessed}
                         handleClick={this.handleClick}
+                        cheat={this.state.cheat}
                     />
+                </div>
+                <div className="container text-center">
+                    <form>
+                        Cheat: <input type="checkbox" onClick={this.handleCheatClick} id="cheatbox"></input>
+                    </form>
                 </div>
             </div>
         )
